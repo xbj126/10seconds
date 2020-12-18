@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>按到10秒整，请你喝奶茶！</title>
+  <meta name=keywords content="按到10秒整，请你喝奶茶！" />
+  <meta name=description content="按到10秒整，请你喝奶茶！" />
+  <meta name=apple-mobile-web-app-capable content=yes />
+  <meta name=apple-mobile-web-app-status-bar-style content=black />
+  <meta name=format-detection content="telephone=no" />
+  <meta name=format-detection content="email=no" />
+  <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .title {
+      width:100%;
+      text-align: center;
+      font-size: 24px;
+      color: orange;
+      margin-top:100px;
+    }
+    .box-wrap{
+        margin-left:30px !important;
+        margin-right:30px !important;
+    }
+
+    .box-wrap, .btn-wrap {
+      display: flex;
+      justify-content: center;
+      margin:30px 0;
+    }
+    .box-wrap span {
+      margin-right: 0.8vw;
+    }
+    .box-wrap .number {
+      vertical-align: baseline;
+      padding: 2vw;
+      border: 1px solid #ccc;
+      border-radius: 10%;
+      width:200px;
+      text-align: center;
+    }
+    .box-wrap .point {
+      width: 3vw;
+    }
+
+    #msg{
+        display: none;
+        text-align: center;
+        font-size: 20px;
+        color:orange;
+        position: absolute;
+        width:100%;
+        height:100%;
+        top:0;
+        left:0;
+        background-color: black;
+        /*opacity: 0.8;*/
+    }
+    #msg div{
+        width:80%;
+        margin:0 auto;
+        display: flex;
+        justify-content: center;
+    }
+
+  </style>
+</head>
+<body>
+<div class="title">按到10秒整，请你喝奶茶！</div>
+<div class="box-wrap">
+    <span id="f" class="number">0</span>
+    <span id="e" class="number">0</span>
+    <span class="point">.</span>
+    <span id="d" class="number">0</span>
+    <span id="c" class="number">0</span>
+<!--    <span id="b" class="number">0</span>-->
+<!--    <span id="a" class="number">0</span>-->
+  </div>
+
+  <div class="btn-wrap">
+    <span id="operateBtn" class="button button-3d button-action button-pill">开始</span>
+  </div>
+
+
+<div id="msg">
+  <div id="txt" style="line-height:200%;margin-top:40px;">厉害！你按到10秒整了!<br />来扫码点奶茶吧！</div>
+  <div id="img" style="margin-top:20px;margin-bottom:20px;"><img src="./img/qrcode.png" style="height:400px" /></div>
+    <button id="ok" class="button button-3d button-action button-pill">知道了</button>
+</div>
+  </body>
+<script>
+  /* 自适应设备DPR */
+  window.onload = function(){ getRem(720, 100) };
+  function getRem(pwidth, prem){
+    var html = document.getElementsByTagName("html")[0];
+    var oWidth = document.body.clientWidth || document.documentElement.clientWidth;
+    html.style.fontSize = oWidth/pwidth*prem + "px";
+    html.setAttribute('data-dpr', window.devicePixelRatio);
+  }
+</script>
+<script>
+  var getEl = function (id) { return document.getElementById(id) }
+  var  c = getEl("c"), d = getEl("d"), e = getEl("e"), f = getEl("f"), butt = getEl("operateBtn");
+  var  btnOK = getEl("ok"), txt = getEl("txt"), img = getEl("img"), winMsgbox = getEl("msg");
+  var type = "start", interval = "", numberArr = [];
+  var numberSpan = document.querySelectorAll(".number");
+  var integerArr = "0123456789".split("");
+  butt.addEventListener("click", function () {
+    if (type === "start") {
+      butt.innerText = '暂停';
+      type = 'end';
+      for (var i = 0; i < numberSpan.length; i++) {
+        numberSpan[i].innerHTML = 0;
+      }
+      var baseDate = +new Date();
+      var timestamp = 0, randomNum = 0;
+      interval = setInterval(function(){
+        timestamp = new Date() - baseDate;
+        numberArr = timestamp.toString().split("").reverse();
+        randomNum = Math.floor(Math.random() * 10); // 最近一位随机~~
+        // a.innerText = integerArr[randomNum];
+        // b.innerText = numberArr[0];
+        if (timestamp >= 10) {
+          c.innerText = numberArr[1];
+          if (timestamp >= 100) {
+            d.innerText = numberArr[2];
+            if (timestamp >= 1000) {
+              e.innerText = numberArr[3];
+              if (timestamp >= 10000) {
+                f.innerText = numberArr[4];
+                if (timestamp >= 99999) {
+                  clearInterval(interval);
+                  butt.innerText = '再来一次';
+                  type = 'start';
+                  for (var i = 0; i < numberSpan.length; i++) {
+                    numberSpan[i].innerHTML = 9;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }, 1);
+    } else {
+      clearInterval(interval);
+        if((f.innerText === '0' && e.innerText === '9' && d.innerText === '9') || (f.innerText === '1' && e.innerText === '0' && d.innerText === '0')){
+            if(f.innerText === '1' && e.innerText === '0' && d.innerText === '0' && c.innerText === '0'){
+                txt.innerHTML = "厉害！你按到10秒整了!<br \/>来扫码点奶茶吧！";
+                img.innerHTML = "<img src=\'./img/qrcode.png\' style=\'height:400px\' />";
+            }else{
+                var randNum = parseInt(11*Math.random());
+                if(randNum===0){randNum=1;}
+                txt.innerText = '只差一点点了！继续努力';
+                img.innerHTML = "<img src=\'./img/omg/"+randNum+".jpg\' style=\'width:300px\' />";
+            }
+            winMsgbox.style.display = 'block';
+        }
+
+      butt.innerText = '再来一次';
+      type = 'start';
+    }
+  });
+
+
+  btnOK.addEventListener("click", function () {
+      winMsgbox.style.display = 'none';
+  });
+</script>
+<style>
+  .button-3d.button-action:active, .button-3d.button-action.active, .button-3d.button-action.is-active {
+    -webkit-box-shadow: 0 2px 0 #6b9619, 0 3px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 0 #6b9619, 0 3px 3px rgba(0, 0, 0, 0.2);
+  }
+  .button-3d:active, .button-3d.active, .button-3d.is-active {
+    top: 5px;
+    -webkit-transition-property: all;
+    transition-property: all;
+    -webkit-transition-duration: .15s;
+    transition-duration: .15s;
+    -webkit-box-shadow: 0 2px 0 #bbbbbb, 0 3px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 0 #bbbbbb, 0 3px 3px rgba(0, 0, 0, 0.2);
+  }
+  .button-3d.button-action {
+    -webkit-box-shadow: 0 7px 0 #8bc220, 0 8px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 7px 0 #8bc220, 0 8px 3px rgba(0, 0, 0, 0.3);
+  }
+  .button-3d {
+    position: relative;
+    top: 0;
+    -webkit-box-shadow: 0 7px 0 #bbbbbb, 0 8px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 7px 0 #bbbbbb, 0 8px 3px rgba(0, 0, 0, 0.2);
+  }
+  .button-pill {
+    border-radius: 200px;
+  }
+  .button-action, .button-action-flat {
+    background-color: #A5DE37;
+    border-color: #A5DE37;
+    color: #FFF;
+  }
+  .button {
+    color: #666;
+    background-color: #EEE;
+    border-color: #EEE;
+    font-weight: 300;
+    font-size: 20px;
+    font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    text-decoration: none;
+    text-align: center;
+    line-height: 50px;
+    height: 50px;
+    padding: 0 80px;
+    margin: 0;
+    display: inline-block;
+    appearance: none;
+    cursor: pointer;
+    border: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition-property: all;
+    transition-property: all;
+    -webkit-transition-duration: .3s;
+    transition-duration: .3s;
+  }
+  .button-action, .button-action-flat {
+    background-color: #A5DE37;
+    border-color: #A5DE37;
+    color: #FFF;
+  }
+</style>
+</html>
